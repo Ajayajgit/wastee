@@ -1,4 +1,4 @@
-name: CI/CD with GitHub Actions and Docker
+name: CD
 
 on:
   push:
@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code
+      # checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Docker
+      # seting docker
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Step 3: Log in to GitHub Container Registry
-      - name: Log in to GitHub Container Registry
+      # loging to hub
+      - name: Log in to dockerhub Container Registry
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 4: Build and push the Docker image
+      # build and push
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -33,7 +33,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/fastapi-app:latest
 
-      # Step 5: Deploy the container (run it on GitHub-hosted runners for testing)
+      # run it 
       - name: Run the Docker container
         run: |
           docker run -d -p 8000:8000 ghcr.io/${{ github.repository_owner }}/fastapi-app:latest
